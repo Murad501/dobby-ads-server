@@ -22,6 +22,19 @@ const client = new MongoClient(uri, {
 const run = async () => {
   try {
     const imageCollections = client.db("dobby-ads").collection("images");
+
+    app.post("/upload", async (req, res) => {
+      const image = req.body;
+      const result = await imageCollections.insertOne(image);
+      res.send(result);
+    });
+
+    app.get("/images/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { author: email };
+      const result = await imageCollections.find(query).toArray();
+      res.send(result);
+    });
   } catch {}
 };
 run().catch((err) => console.log(err));
